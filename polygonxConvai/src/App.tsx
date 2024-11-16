@@ -95,7 +95,6 @@ function App() {
 
   const getCharacter = async (charID: string) => {
     const url = "https://api.convai.com/character/get";
-    const apiKey = ""; // Replace with your actual API key
   
     const headers = {
       "CONVAI-API-KEY": import.meta.env.VITE_CONVAI_API_KEY,
@@ -161,6 +160,40 @@ function App() {
     }
   };
 
+  const updateConvaiCharacterContext = async (charID: string) => {
+    const url = "https://api.convai.com/character/update";
+    const apiKey = ""; // Replace with your actual API key
+  
+    const headers = {
+      "CONVAI-API-KEY": import.meta.env.VITE_CONVAI_API_KEY,
+      "Content-Type": "application/json",
+    };
+  
+    const requestBody = {
+      charID: charID,
+      backstory: responseData,
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(requestBody),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+      console.log("Character data:", data);
+      return data;
+    } catch (error) {
+      console.error("Error fetching character:", error);
+      return null;
+    }
+  }
+
   const handleSubmit = async (e: any) => {
     e.preventDefault()
     if(prompt.trim().length === 0) {
@@ -169,7 +202,7 @@ function App() {
     }
     
     const desc = prompt.trim()
-    const characterName = "G K Raghav"
+    const characterName = "PETER"
     try {
       // Call generateBackstory to get the response
       const response = await generateBackstory(desc, characterName);
@@ -200,6 +233,8 @@ function App() {
       // Wait for the transaction to be mined
       await tx.wait();
       console.log("Message stored on-chain:", tx);
+
+      await updateConvaiCharacterContext("02910810-9249-11ef-800e-42010a7be011");
       alert("Message successfully stored on-chain!");
   
     } catch (error) {
