@@ -282,7 +282,7 @@ const Page: React.FC = ()  => {
             mb: isSearching ? 2 : 0,
           }}
         >
-          Flow3D
+          GRID
         </Typography>
         {/* Search Bar */}
         <Box

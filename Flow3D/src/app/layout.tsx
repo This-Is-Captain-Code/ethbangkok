@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Flow3D",
+  title: "Grid",
   description: "A Digital Frontier",
 };
 
