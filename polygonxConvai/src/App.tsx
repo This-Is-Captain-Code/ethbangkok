@@ -48,7 +48,6 @@ function App() {
   // const { address, isConnected } = useWeb3ModalAccount();
 
   const generateBackstory = async (inputText: string, characterName: string) => {
-    setResponseData(""); // Clear previous response
 
     const url = "https://api.convai.com/character/generate-backstory";
     // const apiKey = "<Your-API-Key>";
@@ -82,9 +81,9 @@ function App() {
 
         const chunk = decoder.decode(value, { stream: true });
         fullResponse += chunk;
-        setResponseData((prev) => prev + chunk); // Update state with the new chunk
+        // setResponseData((prev) => prev + chunk); // Update state with the new chunk
       }
-
+      setResponseData(fullResponse)
       return fullResponse;
 
     } catch (error) {
@@ -160,7 +159,7 @@ function App() {
     }
   };
 
-  const updateConvaiCharacterContext = async (charID: string) => {
+  const updateConvaiCharacterContext = async (charID: string, response: string) => {
     const url = "https://api.convai.com/character/update";
     const apiKey = ""; // Replace with your actual API key
   
@@ -168,10 +167,10 @@ function App() {
       "CONVAI-API-KEY": import.meta.env.VITE_CONVAI_API_KEY,
       "Content-Type": "application/json",
     };
-  
+
     const requestBody = {
       charID: charID,
-      backstory: responseData,
+      backstory: response,
     };
 
     try {
@@ -222,11 +221,13 @@ function App() {
   
       // Instantiate the contract
       const contract = new ethers.Contract(contractAddress, abi, signer);
+
+      console.log(response)
   
       // Call the contract method
       const tx = await contract.addNewMessage(
         signer.getAddress(), // Owner address
-        responseData,            // Generated backstory
+        "",            // Generated backstory
         { gasLimit: 100000 }
       );
   
@@ -234,7 +235,7 @@ function App() {
       await tx.wait();
       console.log("Message stored on-chain:", tx);
 
-      await updateConvaiCharacterContext("02910810-9249-11ef-800e-42010a7be011");
+      await updateConvaiCharacterContext("02910810-9249-11ef-800e-42010a7be011", response);
       alert("Message successfully stored on-chain!");
   
     } catch (error) {
